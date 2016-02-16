@@ -48,7 +48,7 @@ define Package/luci-app-vypr/install
 	$(INSTALL_DIR) $(1)/usr/lib/lua/luci/model/cbi/vypr
 	$(INSTALL_DATA) ./files/vypr.lua $(1)/usr/lib/lua/luci/model/cbi/vypr/
 	$(INSTALL_DIR) $(1)/usr/lib/lua/luci/view
-	$(INSTALL_DATA) ./files/public_ip.htm $(1)/usr/lib/lua/luci/view/
+	$(INSTALL_DATA) ./files/public_ip_vypr.htm $(1)/usr/lib/lua/luci/view/
 	$(INSTALL_DIR) $(1)/etc/config
 	$(INSTALL_DATA) ./files/vypr.config $(1)/etc/config/vypr
 	$(INSTALL_DIR) $(1)/usr/bin
