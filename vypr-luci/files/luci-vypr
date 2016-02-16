@@ -1,0 +1,11 @@
+#!/bin/sh
+
+uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@vypr[-1]
+	add ucitrack vypr
+	set ucitrack.@vypr[-1].init=vypr
+	commit ucitrack
+EOF
+
+rm -f /tmp/luci-indexcache
+exit 0

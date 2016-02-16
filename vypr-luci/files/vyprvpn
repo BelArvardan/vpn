@@ -1,0 +1,13 @@
+#!/bin/sh
+
+if_name="vyprvpn"
+
+uci set network.$if_name=interface
+uci set network.$if_name.ifname=tun0
+uci set network.$if_name.proto=none
+
+zone=$(uci show firewall | awk -F. ' /name=wan/ { print $1 "." $2 } ')
+ifs=$(uci get ${zone}.network)
+uci set ${zone}.network="$ifs $if_name"
+
+uci commit
