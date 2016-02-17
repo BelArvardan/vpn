@@ -15,9 +15,7 @@ touch $LOCKFILE
 logger -t VYPR "Started delete script"
 
 if [ -f $TMPFILE ]; then
-  rm "$TMPFILE"
-  echo > "$SRVLIST"
-fi
+  rm "$TMPFILE" "$SRVLIST"
 fi
 
 rm $LOCKFILE

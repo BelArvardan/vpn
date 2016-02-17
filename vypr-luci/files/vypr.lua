@@ -15,7 +15,7 @@ $Id$
 local fs = require "nixio.fs"
 local sys = require "luci.sys"
 
-m = Map("vypr", "<img src=\"/luci-static/resources/vypr.png\" alt=\"VyprVPN\">",
+m = Map("vypr", "VyprVPN",
 	translate("VyprVPN is a VPN service with a large number of servers all over the world.<br />" ..
 		"For Account Information, visit <a href=\"https://www.goldenfrog.com/vyprvpn\">Billing and Account status</a>."))
 
@@ -94,7 +94,7 @@ function active.cfgvalue(self, section)
 	local pid = fs.readfile("/var/run/openvpn.pid")
 	if pid and #pid > 0 and tonumber(pid) ~= nil then
 		return (sys.process.signal(pid, 0))
-			and translate("yes (%i)", pid)
+			and translatef("yes (%i)", pid)
 			or  translate("no")
 	end
 	return translate("no")
