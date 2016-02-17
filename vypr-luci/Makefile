@@ -52,8 +52,8 @@ define Package/luci-app-vypr/install
 	$(INSTALL_DIR) $(1)/etc/config
 	$(INSTALL_DATA) ./files/vypr.config $(1)/etc/config/vypr
 	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) ./files/vypr.sh $(1)/usr/bin/vypr_download.sh
-	$(INSTALL_BIN) ./files/vypr.sh $(1)/usr/bin/vypr_delete.sh
+	$(INSTALL_BIN) ./files/vypr_download.sh $(1)/usr/bin/vypr_download.sh
+	$(INSTALL_BIN) ./files/vypr_delete.sh $(1)/usr/bin/vypr_delete.sh
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/vypr.init $(1)/etc/init.d/vypr
 	$(INSTALL_DIR) $(1)/etc/uci-defaults
