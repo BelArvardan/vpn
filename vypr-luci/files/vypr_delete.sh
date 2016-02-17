@@ -4,6 +4,7 @@ URL="https://www.goldenfrog.com/openvpn/VyprVPNOpenVPNFiles.zip"
 SRCFILE=$(basename $URL)
 TMPFILE="/etc/openvpn/$SRCFILE"
 LOCKFILE="/tmp/vypr_delete.lock"
+SRVLIST="/etc/openvpn/vypr.list"
 
 if [ -f $LOCKFILE ]; then
 	logger -t VYPR "Update already running: aborting"
@@ -15,6 +16,8 @@ logger -t VYPR "Started delete script"
 
 if [ -f $TMPFILE ]; then
   rm "$TMPFILE"
+  echo > "$SRVLIST"
+fi
 fi
 
 rm $LOCKFILE
