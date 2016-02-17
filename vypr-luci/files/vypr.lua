@@ -20,7 +20,8 @@ m = Map("vypr", "<img src=\"/luci-static/resources/vypr.png\" alt=\"VyprVPN\">",
 		"For Account Information, visit <a href=\"https://www.goldenfrog.com/vyprvpn\">Billing and Account status</a>."))
 
 local srvs_path = "/etc/openvpn/vypr.list"
-local lock_path = "/tmp/vypr.lock"
+local lock_download_path = "/tmp/vypr_download.lock"
+local lock_delete_path = "/tmp/vypr_delete.lock"
 
 s = m:section(TypedSection, "vypr", translate("General Settings"),
 	"To connect to VyprVPN VPN service, fill in your username and password below " ..
@@ -48,22 +49,37 @@ if fs.access(srvs_path) then
 	end
 
 	srv.write = function(self, section, value)
-		-- luci.sys.call("unzip -p /etc/openvpn/vpn-config.zip " .. value .. ".ovpn > /etc/openvpn/vypr.ovpn")
-		-- Value.write(self, section, value)
+		luci.sys.call("unzip -p /etc/openvpn/VyprVPNOpenVPNFiles.zip VyprVPNOpenVPNFiles/" .. value .. ".ovpn > /etc/openvpn/vypr.ovpn")
+		Value.write(self, section, value)
 	end
 end
 
-if fs.access(lock_path) then
-	reload = s:option(Button, "_reload", translate("VPN Configs"))
-	reload.inputtitle = translate("Updating... Reload this page")
-	reload.write = function(self, section)
+if fs.access(lock_download_path) then
+	reload_download = s:option(Button, "_reload_download", translate("VPN Configs"))
+	reload_download.inputtitle = translate("Updating... Reload this page")
+	reload_download.write = function(self, section)
 		luci.http.redirect(luci.dispatcher.build_url("admin", "services", "vypr"))
 	end
-else
-	update = s:option(Button, "_update", translate("VPN Configs"))
-	update.inputtitle = translate("Update config files")
-	update.write = function(self, section)
-		luci.sys.call("/usr/bin/vypr.sh &")
+elseif (not fs.access(lock_delete_path)) then
+	download = s:option(Button, "_download", translate("VPN Configs"))
+	download.inputtitle = translate("Download/Update config files")
+	download.write = function(self, section)
+		luci.sys.call("/usr/bin/vypr_download.sh &")
+		luci.http.redirect(luci.dispatcher.build_url("admin", "services", "vypr"))
+	end
+end
+
+if fs.access(lock_delete_path) then
+	reload_delete = s:option(Button, "_reload_delete", translate("Delete VPN Configs"))
+	reload_delete.inputtitle = translate("Deleting... Reload this page")
+	reload_delete.write = function(self, section)
+		luci.http.redirect(luci.dispatcher.build_url("admin", "services", "vypr"))
+	end
+elseif (not fs.access(lock_download_path)) then
+	delete = s:option(Button, "_delete", translate("Delete VPN Configs"))
+	delete.inputtitle = translate("Delete config files")
+	delete.write = function(self, section)
+		luci.sys.call("/usr/bin/vypr_delete.sh &")
 		luci.http.redirect(luci.dispatcher.build_url("admin", "services", "vypr"))
 	end
 end
@@ -73,6 +89,7 @@ p.addremove = false
 p.anonymous = true
 
 local active = p:option( DummyValue, "_active", translate("Started") )
+
 function active.cfgvalue(self, section)
 	local pid = fs.readfile("/var/run/openvpn.pid")
 	if pid and #pid > 0 and tonumber(pid) ~= nil then

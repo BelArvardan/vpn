@@ -3,7 +3,7 @@
 URL="https://www.goldenfrog.com/openvpn/VyprVPNOpenVPNFiles.zip"
 SRCFILE=$(basename $URL)
 TMPFILE="/etc/openvpn/$SRCFILE"
-LOCKFILE="/tmp/vypr.lock"
+LOCKFILE="/tmp/vypr_download.lock"
 SRVLIST="/etc/openvpn/vypr.list"
 
 logger -t VYPR "Started update script"
@@ -24,7 +24,7 @@ logger -t VYPR "wget $URL: $?"
 unzip -t "$TMPFILE" || rm "$TMPFILE"
 
 if [ -f $TMPFILE ]; then
-  unzip -l "$TMPFILE" | grep ".ovpn" | awk '{ print $4 $5 $6 }' | sed -e 's/VyprVPNOpenVPNFiles\/\(.*\).ovpn/\1/g' > "$SRVLIST"
+  unzip -l "$TMPFILE" | grep ".ovpn" | awk '{ print $4 $5 $6 }' | sed 's/.ovpn//g' | sed 's/VyprVPNOpenVPNFiles\///g' > "$SRVLIST"
 fi
 
 rm $LOCKFILE

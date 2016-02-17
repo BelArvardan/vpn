@@ -12,7 +12,7 @@ You may obtain a copy of the License at
 $Id$
 ]]--
 
-module("luci.controller.vyrpctl", package.seeall)
+module("luci.controller.vyprctl", package.seeall)
 
 function index()
 	if not nixio.fs.access("/etc/config/vypr") then
