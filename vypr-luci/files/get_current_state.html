@@ -1,0 +1,18 @@
+<%+cbi/valueheader%>
+
+<script type="text/javascript">//<![CDATA[
+	XHR.poll(5, '<%=luci.dispatcher.build_url("admin", "system", "get_current_state")%>', null,
+		function(x, rv)
+		{
+			var s = document.getElementById('<%=self.option%>-current-state');
+			if (s)
+			{
+				s.innerHTML = rv.state || 'undefined';
+			}
+		}
+	);
+//]]></script>
+
+<span id="<%=self.option%>-current-state"><em><%:Getting data...%></em></span>
+
+<%+cbi/valuefooter%>

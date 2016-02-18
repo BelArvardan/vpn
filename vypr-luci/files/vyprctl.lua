@@ -25,6 +25,8 @@ function index()
 	page.dependent = true
 
 	entry({"admin", "system", "public_ip_vypr"}, call("action_public_ip_vypr"))
+
+	entry({"admin", "system", "get_current_state"}, call("action_get_current_state"))
 end
 
 function action_public_ip_vypr()
@@ -45,4 +47,20 @@ function action_public_ip_vypr()
 		luci.http.prepare_content("application/json")
 		luci.http.write_json({ ipstring = res })
 	end
+end
+
+function action_get_current_state()
+	local pid = fs.readfile("/var/run/openvpn.pid")
+	local res = ""
+	if pid and #pid > 0 and tonumber(pid) ~= nil then
+		res = (sys.process.signal(pid, 0))
+			and translatef("yes (%i)", pid)
+			or  translate("no")
+	end
+	else 
+		res = translate("no")
+	end
+
+	luci.http.prepare_content("application/json")
+	luci.http.write_json({ state = res })
 end

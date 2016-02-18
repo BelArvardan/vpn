@@ -97,16 +97,18 @@ p = m:section(TypedSection, "vypr", translate("VPN Status"), "There is a 5 secon
 p.addremove = false
 p.anonymous = true
 
-local active = p:option( DummyValue, "_active", translate("Started") )
-function active.cfgvalue(self, section)
-	local pid = fs.readfile("/var/run/openvpn.pid")
-	if pid and #pid > 0 and tonumber(pid) ~= nil then
-		return (sys.process.signal(pid, 0))
-			and translatef("yes (%i)", pid)
-			or  translate("no")
-	end
-	return translate("no")
-end
+st = p:option(DummyValue, "_active", translate("Started"))
+st.template = "get_current_state"
+-- local active = p:option( DummyValue, "_active", translate("Started") )
+-- function active.cfgvalue(self, section)
+-- 	local pid = fs.readfile("/var/run/openvpn.pid")
+-- 	if pid and #pid > 0 and tonumber(pid) ~= nil then
+-- 		return (sys.process.signal(pid, 0))
+-- 			and translatef("yes (%i)", pid)
+-- 			or  translate("no")
+-- 	end
+-- 	return translate("no")
+-- end
 
 o = p:option(DummyValue, "_ip", translate("Public IP Vypr"))
 o.template = "public_ip_vypr"
