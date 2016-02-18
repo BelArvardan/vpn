@@ -59,8 +59,6 @@ define Package/luci-app-vypr/install
 	$(INSTALL_DIR) $(1)/etc/uci-defaults
 	$(INSTALL_BIN) ./files/luci-vypr $(1)/etc/uci-defaults
 	$(INSTALL_BIN) ./files/vyprvpn $(1)/etc/uci-defaults
-	$(INSTALL_DIR) $(1)/www/luci-static/resources
-	$(INSTALL_DATA) ./files/vypr.png $(1)/www/luci-static/resources
 endef
 
 $(eval $(call BuildPackage,luci-app-vypr))
