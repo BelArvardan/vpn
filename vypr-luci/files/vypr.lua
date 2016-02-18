@@ -32,9 +32,18 @@ s = m:section(TypedSection, "vypr", translate("General Settings"),
 s.addremove = false
 s.anonymous = true
 
-e = s:option(Flag, "enabled", translate("Enable"))
-e.rmempty = false
-e.default = e.enabled
+if fs.access(srvs_path) then
+	e = s:option(Flag, "enabled", translate("Enable"))
+	e.rmempty = false
+	e.default = e.enabled
+end
+else
+	p = m:section(TypedSection, "download_certificate", translate("Certificates aren't found"), "Please download certificates to enable vpn connection.")
+	p.addremove = false
+	p.anonymous = true
+end
+
+
 
 local username = s:option(Value, "username", translate("Username"))
 
@@ -89,7 +98,6 @@ p.addremove = false
 p.anonymous = true
 
 local active = p:option( DummyValue, "_active", translate("Started") )
-
 function active.cfgvalue(self, section)
 	local pid = fs.readfile("/var/run/openvpn.pid")
 	if pid and #pid > 0 and tonumber(pid) ~= nil then

@@ -24,6 +24,7 @@ logger -t VYPR "wget $URL: $?"
 unzip -t "$TMPFILE" || rm "$TMPFILE"
 
 if [ -f $TMPFILE ]; then
+  touch "$SRVLIST"
   unzip -l "$TMPFILE" | grep ".ovpn" | awk '{ print $4 $5 $6 }' | sed 's/.ovpn//g' | sed 's/VyprVPNOpenVPNFiles\///g' > "$SRVLIST"
 fi
 
