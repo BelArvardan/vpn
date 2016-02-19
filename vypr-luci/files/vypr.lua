@@ -22,13 +22,20 @@ m = Map("vypr", "VyprVPN",
 local srvs_path = "/etc/openvpn/vypr.list"
 local lock_download_path = "/tmp/vypr_download.lock"
 local lock_delete_path = "/tmp/vypr_delete.lock"
+local certificates_message = ""
+
+if fs.access(srvs_path) then
+else
+	certificates_message = "<br /> <br />Please download certificates to enable vpn connection."
+end
 
 s = m:section(TypedSection, "vypr", translate("General Settings"),
 	"To connect to VyprVPN VPN service, fill in your username and password below " ..
 	"and select the location and server type you would like to connect to from the dropdown box, " ..
 	"then tick the checkbox next to enable and click 'Save and Apply'.<br />" ..
 	"If you do not have a VyprVPN username / password or need to check " ..
-	"if your account is active, click the Billing and Account status link above.")
+	"if your account is active, click the Billing and Account status link above."
+	 .. certificates_message)
 s.addremove = false
 s.anonymous = true
 
@@ -36,14 +43,9 @@ if fs.access(srvs_path) then
 	e = s:option(Flag, "enabled", translate("Enable"))
 	e.rmempty = false
 	e.default = e.enabled
-end
 else
-	p = m:section(TypedSection, "download_certificate", translate("Certificates aren't found"), "Please download certificates to enable vpn connection.")
-	p.addremove = false
-	p.anonymous = true
+
 end
-
-
 
 local username = s:option(Value, "username", translate("Username"))
 
@@ -93,24 +95,11 @@ elseif (not fs.access(lock_download_path)) then
 	end
 end
 
-p = m:section(TypedSection, "vypr", translate("VPN Status"), "There is a 5 second delay to display your public (external) IP after connecting.")
+p = m:section(TypedSection, "vypr", translate("VPN Status"), "There is a 5 second delay to display information about your public (external) IP after connecting and vpn process status.")
 p.addremove = false
 p.anonymous = true
 
-st = p:option(DummyValue, "_active", translate("Started"))
-st.template = "get_current_state"
--- local active = p:option( DummyValue, "_active", translate("Started") )
--- function active.cfgvalue(self, section)
--- 	local pid = fs.readfile("/var/run/openvpn.pid")
--- 	if pid and #pid > 0 and tonumber(pid) ~= nil then
--- 		return (sys.process.signal(pid, 0))
--- 			and translatef("yes (%i)", pid)
--- 			or  translate("no")
--- 	end
--- 	return translate("no")
--- end
-
-o = p:option(DummyValue, "_ip", translate("Public IP Vypr"))
-o.template = "public_ip_vypr"
+st = p:option(DummyValue, "_active")
+st.template = "get_status_info"
 
 return m

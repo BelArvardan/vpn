@@ -1,0 +1,40 @@
+<%+cbi/valueheader%>
+
+<script type="text/javascript">//<![CDATA[
+	XHR.poll(5, '<%=luci.dispatcher.build_url("admin", "system", "get_status_info")%>', null,
+		function(x, rv) {
+			var publicIPElement = document.getElementById('<%=self.option%>-public-ip-address'),
+				processElement = document.getElementById('<%=self.option%>-process-info');
+
+			console.log(x);
+			console.log(rv);
+
+			if (processElement) {
+				if (rv.process_id) {
+					processElement.innerHTML = "Yes(" + rv.process_id + ")";
+				} else {
+					processElement.innerHTML = "No";
+				}
+			}
+
+			if (publicIPElement) {
+				publicIPElement.innerHTML = rv.ipstring || 'undefined';
+			}
+		}
+	);
+//]]></script>
+
+<table>
+	<tbody>
+		<tr>
+			<td><b>Started:</b></td>
+			<td><span id="<%=self.option%>-process-info"><em><%:Getting data...%></em></span></td>
+		</tr>
+		<tr>
+			<td><b>Public IP:</b></td>
+			<td><span id="<%=self.option%>-public-ip-address"><em><%:Getting data...%></em></span></td>
+		</tr>
+	</tbody>
+</table>
+
+<%+cbi/valuefooter%>

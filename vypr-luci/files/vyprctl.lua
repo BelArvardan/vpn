@@ -19,17 +19,23 @@ function index()
 		return
 	end
 
-	local page
-
-	page = entry({"admin", "services", "vypr"}, cbi("vypr/vypr"), _("VyprVPN"))
+	local page = entry({"admin", "services", "vypr"}, cbi("vypr/vypr"), _("VyprVPN"))
 	page.dependent = true
 
-	entry({"admin", "system", "public_ip_vypr"}, call("action_public_ip_vypr"))
-
-	entry({"admin", "system", "get_current_state"}, call("action_get_current_state"))
+	entry({"admin", "system", "get_status_info"}, call("action_get_status_info"))
+	
 end
 
-function action_public_ip_vypr()
+function get_openvpn_state()
+	local pid = nixio.fs.readfile("/var/run/openvpn.pid")
+	local current_pid = 0
+	if pid and #pid > 0 and tonumber(pid) ~= nil and luci.sys.process.signal(pid, 0) then
+		current_pid = tonumber(pid)
+	end
+	return current_pid
+end
+
+function get_ip()
 	local ipt = io.popen("wget -O - -q http://whatismyip.org/ | grep -oE '((1?[0-9][0-9]?|2[0-4][0-9]|25[0-5])\\.){3}(1?[0-9][0-9]?|2[0-4][0-9]|25[0-5])'")
 	if ipt then
 		local res = ""
@@ -43,24 +49,14 @@ function action_public_ip_vypr()
 		end
 
 		ipt:close()
-
-		luci.http.prepare_content("application/json")
-		luci.http.write_json({ ipstring = res })
+		return res
 	end
 end
 
-function action_get_current_state()
-	local pid = fs.readfile("/var/run/openvpn.pid")
-	local res = ""
-	if pid and #pid > 0 and tonumber(pid) ~= nil then
-		res = (sys.process.signal(pid, 0))
-			and translatef("yes (%i)", pid)
-			or  translate("no")
-	end
-	else 
-		res = translate("no")
-	end
+function action_get_status_info()
+	local ip = get_ip()
+	local pid = get_openvpn_state()
 
 	luci.http.prepare_content("application/json")
-	luci.http.write_json({ state = res })
+	luci.http.write_json({ ["process_id"] = pid, ["ipstring"] = ip })
 end
