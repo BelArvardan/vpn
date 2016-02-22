@@ -15,6 +15,11 @@ start() {
 	config_get_bool enabled "general" 'enabled' '0'
 	[ $enabled -gt 0 ] || return 1
 
+	if [ uci get hma.general.enabled == 1 ] ; then
+		uci set hma.general.enabled=0
+		uci commit
+	fi
+
 	config_get username "general" 'username' 'admin'
 	echo $username > $PASSFILE
 	config_get password "general" 'password' 'qwerty'
