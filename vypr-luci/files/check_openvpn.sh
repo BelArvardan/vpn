@@ -7,34 +7,31 @@ SLEEP=60
 VPN=""
 
 ping_server () {
-	echo "ping"
-	# SERVER=$( grep "^remote" "$OVPN_FILE_DIRECTORY$VPN.ovpn" | sed 's/^remote //g' | sed 's/ .*$//g' )
-	SERVER="8.8.8.8"
+	#echo "ping"
+	SERVER=$( grep "^remote" "$OVPN_FILE_DIRECTORY$VPN.ovpn" | sed 's/^remote //g' | sed 's/ .*$//g' )
+	# SERVER="8.8.8.8"
 	ping -w 2 -c 1 ${SERVER} >/dev/null 2>&1
 	if [ ! $? = 0 ]; then
 		$SERVICES_DIRECTORY$VPN restart >/dev/null 2>&1
-		echo restart
+		#echo restart
 	fi
 }
 
 run () {
-	# if  ; then
-	# 	# $SERVICES_DIRECTORY$VPN start
-
-	# else
-	# 	ping_server
-	# fi
-	[ -z $(pidof openvpn) ] || ping_server
+	if [ -z $(pidof openvpn) ] ; then
+		$SERVICES_DIRECTORY$VPN start
+	else
+		ping_server
+	fi
 }
 
 while true; do
-	if [ $(uci get vypr.general.enabled)=="1" ] && [ $(uci get hma.general.enabled)=="0" ] ; then
+	if [ "$(uci get vypr.general.enabled)" == "1" ] && [ $(uci get hma.general.enabled) == "0" ] ; then
 		VPN="vypr"
 		run 
-	elif [ $(uci get vypr.general.enabled)=="0" ] && [ $(uci get hma.general.enabled)=="1" ] ; then
+	elif [ "$(uci get vypr.general.enabled)" == "0" ] && [ "$(uci get hma.general.enabled)" == "1" ] ; then
 		VPN="hma"
 		run
 	fi
-	echo hs
 	sleep $SLEEP
 done
