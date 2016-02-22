@@ -7,20 +7,24 @@ SLEEP=60
 VPN=""
 
 ping_server () {
+	echo "ping"
 	# SERVER=$( grep "^remote" "$OVPN_FILE_DIRECTORY$VPN.ovpn" | sed 's/^remote //g' | sed 's/ .*$//g' )
 	SERVER="8.8.8.8"
 	ping -w 2 -c 1 ${SERVER} >/dev/null 2>&1
 	if [ ! $? = 0 ]; then
 		$SERVICES_DIRECTORY$VPN restart >/dev/null 2>&1
+		echo restart
 	fi
 }
 
 run () {
-	if [ -z $(pidof openvpn) ] ; then
-		$SERVICES_DIRECTORY$VPN start
-	else
-		ping_server
-	fi
+	# if  ; then
+	# 	# $SERVICES_DIRECTORY$VPN start
+
+	# else
+	# 	ping_server
+	# fi
+	[ -z $(pidof openvpn) ] || ping_server
 }
 
 while true; do
@@ -31,5 +35,6 @@ while true; do
 		VPN="hma"
 		run
 	fi
+	echo hs
 	sleep $SLEEP
 done
