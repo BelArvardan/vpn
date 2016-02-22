@@ -2,6 +2,6 @@
 # the system init finished. By default this file does nothing.
 
 # /etc/init.d/openvpn enable
-/usr/bin/check_openvpn.sh &
+/usr/bin/check_openvpn.sh 30 &
 
 exit 0
