@@ -9,3 +9,13 @@ Update/download all feeds: ./scripts/feeds update
 Install all (-a) packages from this feed (-p) vpn: ./scripts/feeds install -a -p vpn
 
 Then select needed packages in menuconfig and make the firmware.
+
+
+
+IVPN is an online privacy service and security service operating out of Gibraltar.
+
+PGP fingerprint: 8169 5A68 8402 C4BE AB33 CEA4 92B6 B00E C485 B578
+
+Find More information about IVPN or signup by following this link. https://www.ivpn.net/aff.php?aff=1471
+
+
