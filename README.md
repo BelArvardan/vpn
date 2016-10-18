@@ -1,6 +1,8 @@
-OpenWRT package for VyprVPN
+OpenWRT package for IVPN
 
-To use these packages you need to add this feed to your openwrt feeds list dy adding following line in openwrt_source_tree/feeds.conf.default file: src-git vpn https://github.com/scherbenokk/vpn.git
+This is a fork of Kirill Scherbenok's OpenWRT package for VyprVPN, found here https://github.com/scherbenokk/vpn.git/.
+
+To use these packages you need to add this feed to your openwrt feeds list dy adding following line in openwrt_source_tree/feeds.conf.default file: src-git vpn https://github.com/BelArvardan/vpn.git
 
 Update/download all feeds: ./scripts/feeds update
 
