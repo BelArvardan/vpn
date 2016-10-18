@@ -1,0 +1,30 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2015 Promwad.com
+
+START=99
+
+SERVICE_DAEMONIZE=1
+SERVICE_WRITE_PID=1
+
+PASSFILE=/etc/openvpn/pass.txt
+CFGFILE=/etc/openvpn/ivpn.ovpn
+
+start() {
+	config_load 'ivpn'
+
+	config_get_bool enabled "general" 'enabled' '0'
+	[ $enabled -gt 0 ] || return 1
+
+	config_get username "general" 'username' 'admin'
+	echo $username > $PASSFILE
+	config_get password "general" 'password' 'qwerty'
+	echo $password >> $PASSFILE
+
+	sed -i "s/^auth-user-pass$/auth-user-pass \/etc\/openvpn\/pass.txt/" $CFGFILE
+
+	service_start /usr/sbin/openvpn "$CFGFILE"
+}
+
+stop() {
+	service_stop /usr/sbin/openvpn "$CFGFILE"
+}

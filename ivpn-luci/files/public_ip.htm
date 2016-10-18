@@ -1,0 +1,18 @@
+<%+cbi/valueheader%>
+
+<script type="text/javascript">//<![CDATA[
+	XHR.poll(5, '<%=luci.dispatcher.build_url("admin", "system", "public_ip")%>', null,
+		function(x, rv)
+		{
+			var s = document.getElementById('<%=self.option%>-public-ip');
+			if (s)
+			{
+				s.innerHTML = rv.ipstring || '?';
+			}
+		}
+	);
+//]]></script>
+
+<span id="<%=self.option%>-public-ip"><em><%:Collecting data...%></em></span>
+
+<%+cbi/valuefooter%>
